@@ -10,7 +10,7 @@ const users = [
 router.use(express.json())
 // Sample login route with authentication
 router.post('/login', async (req, res) => {
-  
+  console.log("sunshine")
   const { username, password } = req.body;
 console.log("username: ", username)
 console.log("Password: ", password)

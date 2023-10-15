@@ -9,48 +9,36 @@ const [data,setData]=useState({
 const handleInputChange=(event)=>{
 	
 	const {name,value}=event.target;
+  console.log("name and value")
+  console.log(name)
+  console.log(value)
 	setData({
 		...data,
 		[name]:value
 	})
 }
 
-const handleSubmit=async (event)=>{
+const handleLogin=async (event)=>{
 event.preventDefault();
 try{ 
-	//const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-// fetch('/api/data').then((r)=>console.log(r.text())).then((d)=>console.log("dk ",d))
-fetch('http://localhost:3002/user/login',{
-	method:'POST',
-	headers:{'Content-Type': 'application/json',},
-	body: JSON.stringify(data),
-})
-  .then((response) => {
-    if (!response.ok) {
-	console.log("hffs")
-      console.log("Network response was not ok")
-      throw new Error('Network response was not ok');
+	const response = await axios.post('http://localhost:3002/login', {
+      username: data.username,
+      password: data.password,
+    });
+
+    // Check the response status code to determine success or failure
+    if (response.status === 200) {
+      console.log("Login successful");
+    } else {
+      console.log("Login failed with status code:", response.status);
     }
-    else {
-      console.log("good dyeeE")
-	//console.log("EINRle: ",response.body)
-       return response.json(); // Parse response body as JSON
-    }
-  })
-  .then((data) => {
-    // Now 'data' contains the parsed JSON response
-    console.log("Parsed JSON data:");
-    console.log(data);
-  })
-  .catch((error) => {
-    console.error('Error fetching data:', error);
-  });
 	
 }
+
 catch(error){
-	console.log("error has IRJ happened")
-	console.log(error)
+  console.log("erro ahppeRned")
 }
+
 }
 
   return (
@@ -60,7 +48,7 @@ catch(error){
           <div className="card mt-5">
             <div className="card-body">
               <h3 className="card-title text-center">Welcome</h3>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleLogin}>
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label">Username</label>
                   <input 
@@ -69,7 +57,7 @@ catch(error){
 		  id="username"
 		 name="username"
 		 value={data.username}
-		 onChange={handleInputChange} 
+		 onChange={(e)=>setData({...data,username:e.target.value})} 
 		  />
                 </div>
                 <div className="mb-3">
@@ -80,7 +68,7 @@ catch(error){
 		  id="password" 
 		  name="password"
 		  value={data.password}
-		  onChange={handleInputChange}
+		  onChange={(e)=>setData({...data,password:e.target.value})}
 		  />
                 </div>
                 <button type="submit" className="btn btn-primary">Login</button>
