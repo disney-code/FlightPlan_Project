@@ -6,22 +6,22 @@ const [data,setData]=useState({
 	password:''
 })
 
-const handleInputChange=(event)=>{
+// const handleInputChange=(event)=>{
 	
-	const {name,value}=event.target;
-  console.log("name and value")
-  console.log(name)
-  console.log(value)
-	setData({
-		...data,
-		[name]:value
-	})
-}
+// 	const {name,value}=event.target;
+//   console.log("name and value")
+//   console.log(name)
+//   console.log(value)
+// 	setData({
+// 		...data,
+// 		[name]:value
+// 	})
+// }
 
 const handleLogin=async (event)=>{
 event.preventDefault();
 try{ 
-	const response = await axios.post('http://localhost:3002/login', {
+	const response = await axios.post('http://localhost:3002/users/login', {
       username: data.username,
       password: data.password,
     });

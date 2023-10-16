@@ -32,66 +32,11 @@ process.on('SIGINT', () => {
 
 
 
-// Middleware and route handling go here
 
+const router = require('./src/routes/userRoutes');
 
 app.use(cors());
-
-const userSchema = new mongoose.Schema({
-  username: {type:String, unique:true},
-  email: {type:String, unique:true},
-  password: String,
-});
-
-const User = mongoose.model('User', userSchema);
-
-// app.post('/submit-form', async (req, res) => {
-//   const formData = req.body; // Assuming you're sending data in the request body
-
-//   const existingUser = await User.findOne({
-//     $or: [{ username: formData.username }, { email: formData.email }],
-//   });
-
-//   if(existingUser){
-//     return res.status(400).json({message:"Username or email already in use"})
-//   }
-  
-//   const newUser = new User(formData);
-  
-//   newUser.save()
-//     .then(() => {
-//       res.status(201).json({ message: 'User registered successfully' });
-//     })
-//     .catch((error) => {
-//       res.status(500).json({ message: 'Error saving user data', error });
-//     });
-// });
-
-
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-console.log("username:")
-console.log(username)
-  try{
-  const user = await User.findOne({username});
-
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid Username' });
-  }
-  if (user.password !== password) {
-    return res.status(401).json({ message: 'Invalid Password' });
-  }
-
-  // Authentication successful
-  return res.json({ message: 'Login successful' });
-  }
-  catch(error){
-    console.log("Error in login RouteL")
-    return res.status(500).json({message:'Internal server error'})
-  }
-})
-
-
+app.use('/users',router)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

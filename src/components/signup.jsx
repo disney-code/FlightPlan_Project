@@ -13,7 +13,7 @@ const [error, setError] = useState(null);
 const handleSubmit=(event)=>{
 	event.preventDefault();
 	
-	axios.post('http://localhost:3002/submit-form', formData)
+	axios.post('http://localhost:3002/users/signup', formData)
 	.then((response) => {
 		
 		setError(null)

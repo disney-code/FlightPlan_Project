@@ -10,13 +10,13 @@ return(
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ml-auto">
           <li className="nav-item">
-          <a className="nav-link" href="/">Home</a>
+          <a className="nav-link" href="/login">Log In</a>
           </li>
           <li className="nav-item">
-          <a className="nav-link" href="/book">Book</a>
+          <a className="nav-link" href="/signup">Sign Up</a>
           </li>
           <li className="nav-item">
-          <a className="nav-link" href="/ballotresults">Ballot Results</a>
+          <a className="nav-link" href="/about">About</a>
           </li>
         </ul>
       </div>
