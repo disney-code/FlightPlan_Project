@@ -6,10 +6,12 @@ import Login from './components/login';
 import SignUp from './components/signup';
 import About from './components/About';
 import Map from './components/Map';
+import FlightPlan from './components/FlightPlans';
 function App() {
   return (
     <Router>
       <Routes>
+      <Route path="/flightplan" element={<FlightPlan />}  />
       <Route path="/map" element={<Map />}  />
         <Route path="/" element={<NavBar />}  />
         <Route path="/about" element={<About />}  />

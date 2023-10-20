@@ -4,8 +4,8 @@ import axios from 'axios';
 import React, { useEffect, useState ,useMemo } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker } from 'react-leaflet';
 import { latLngBounds } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import 'react-leaflet-markercluster/dist/styles.min.css';
+// import 'leaflet/dist/leaflet.css';
+// import 'react-leaflet-markercluster/dist/styles.min.css';
 function Map(){
 
 	const waypoints = useMemo(
