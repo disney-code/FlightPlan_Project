@@ -44,6 +44,7 @@ if (firstMatchingFlightPlan) {
   
   async function makeApiRequest(point) {
     try {
+      let callNavaids=false;
       console.log("POinT: ", point)
       console.log("type of point: ", typeof point)
       const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
@@ -51,13 +52,18 @@ if (firstMatchingFlightPlan) {
       const data = await response.json();
       const transformedData = [];
       if (data.length>0){
-        data.forEach(item=>{
+        for(const item of data){
           const parts = item.split(' '); // Split the item by space
         if (parts.length === 2) {
           
           const [key, value] = parts; // Separate key and value
-          console.log("KeY: ", key)
-          console.log("type of KeY: ", typeof key)
+          if (key!==point){
+            console.log("key not equal point")
+            console.log("key is: ", key)
+            console.log("PoInT is: ", point)
+            callNavaids=true
+            break
+          }
           const temp=value.slice(1,-1)
           const [x,y] = temp.split(',').map(Number)
           const obj = {
@@ -67,13 +73,45 @@ if (firstMatchingFlightPlan) {
        
           transformedData.push(obj);
         }
-
-        else{
-          console.log("There is more than one spacing!!!!!!")
         }
-        })
+
+
+        if (callNavaids){
+          console.log("HEskd!!")
+          const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
+          const response = await fetch(apiNavaids);
+      const data = await response.json();
+      console.log("after calling navaids:")
+      console.log(data)
+      console.log("above is data from api navaids")
+      const transformedData = [];
+      for(const item of data){
+        const parts = item.split(' '); // Split the item by space
+        console.log("parts split into 2: ", parts)
+      if (parts.length === 2) {
+        
+        const [key, value] = parts; // Separate key and value
+        
+        const temp=value.slice(1,-1)
+        const [x,y] = temp.split(',').map(Number)
+        const obj = {
+          [key]:  [x,y] 
+          
+        };
+        console.log("pls u may see VPK below: ")
+        console.log(obj)
+     
+        transformedData.push(obj);
+        console.log("VPK transformed data")
+        console.log(transformedData)
+      }
       }
       setResults((prevResults) => [...prevResults, transformedData]);
+        }
+
+        setResults((prevResults) => [...prevResults, transformedData]);
+      }
+      
       
     } catch (error) {
       console.error(`Error for point ${point}: ${error}`);
