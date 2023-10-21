@@ -47,7 +47,7 @@ if (firstMatchingFlightPlan) {
         // Add a delay of 1 second (1000 milliseconds) between requests
         if (index > 0) {
           console.log("waitING")
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 900));
         }
         
         const fixUrl = `http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`;
@@ -67,7 +67,7 @@ if (firstMatchingFlightPlan) {
       } catch (error) {
         return {
           point,
-          error: "Data not found for this point CHARLENE",
+          error: error,
         };
       }
     })
