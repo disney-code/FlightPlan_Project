@@ -8,8 +8,9 @@ function FlightPlan() {
 
   useEffect(() => {
     console.log("Results have been updated:", results);
+
   }, [results]);
-  
+
 	const handleInputChange = (e) => {
 		setFlightNumber(e.target.value);}
 
@@ -43,10 +44,36 @@ if (firstMatchingFlightPlan) {
   
   async function makeApiRequest(point) {
     try {
+      console.log("POinT: ", point)
+      console.log("type of point: ", typeof point)
       const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
       const response = await fetch(apiEndPoint);
       const data = await response.json();
-      setResults((prevResults) => [...prevResults, data]);
+      const transformedData = [];
+      if (data.length>0){
+        data.forEach(item=>{
+          const parts = item.split(' '); // Split the item by space
+        if (parts.length === 2) {
+          
+          const [key, value] = parts; // Separate key and value
+          console.log("KeY: ", key)
+          console.log("type of KeY: ", typeof key)
+          const temp=value.slice(1,-1)
+          const [x,y] = temp.split(',').map(Number)
+          const obj = {
+            [key]:  [x,y] 
+            
+          };
+       
+          transformedData.push(obj);
+        }
+
+        else{
+          console.log("There is more than one spacing!!!!!!")
+        }
+        })
+      }
+      setResults((prevResults) => [...prevResults, transformedData]);
       
     } catch (error) {
       console.error(`Error for point ${point}: ${error}`);
@@ -62,6 +89,8 @@ if (firstMatchingFlightPlan) {
   }
   
   processItems()
+
+ 
   
 } else {
   console.log('No matching flight plan found with "filedRoute" containing "routeText" or "routeElement.');
@@ -98,7 +127,7 @@ catch (error) {
       <button  type="submit" className="btn btn-primary">Submit</button>
       </form>
 
-      <div>
+      {/* <div>
       <h2>Results:</h2>
           <ul>
             {results.map((result, index) => (
@@ -106,7 +135,7 @@ catch (error) {
             ))}
           </ul>
           {results.length === 0 && <p>No results to display.</p>}
-      </div>
+      </div> */}
     </div>
   );
 }
