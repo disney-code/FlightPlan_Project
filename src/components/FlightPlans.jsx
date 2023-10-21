@@ -1,9 +1,14 @@
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import axios from 'axios';
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
 	const [flightNumber, setFlightNumber] = useState('');
-  const [responses, setResponses] = useState([]);
+  
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    console.log("Results have been updated:", results);
+  }, [results]);
   
 	const handleInputChange = (e) => {
 		setFlightNumber(e.target.value);}
@@ -32,21 +37,17 @@ if (firstMatchingFlightPlan) {
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
 
-  // Handle the extracted data
-  console.log('Extracted "routeText":', routeText);
-  console.log('Extracted "routeElement":', routeElement);
-  //const designatedPoints = routeElement.map(route => route.position.designatedPoint);
-  const designatedPoints =['PIBAP',  'VPK',"GOLUD",'NOMEP',"KIGOB"]
-  //const designatedPoints =[ 'VPK',"KIGOB"]
+  
+  const designatedPoints = routeElement.map(route => route.position.designatedPoint);
   console.log(designatedPoints)
-  const results = [];
+  
   async function makeApiRequest(point) {
     try {
       const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
-      console.log("apiEndPoint: ", apiEndPoint)
       const response = await fetch(apiEndPoint);
       const data = await response.json();
-      results.push(data);
+      setResults((prevResults) => [...prevResults, data]);
+      
     } catch (error) {
       console.error(`Error for point ${point}: ${error}`);
     }
@@ -54,55 +55,13 @@ if (firstMatchingFlightPlan) {
 
   async function processItems() {
     for (const item of designatedPoints) {
-      console.log("Here: ")
-      console.log(item)
+      
       await makeApiRequest(item);
       // Add a delay or rate-limiting logic here to respect API limits.
     }
   }
   
-  processItems().then(() => {
-    console.log("API query completed")
-    console.log("Results are as such: ", results)
-    // All API requests are completed here, and results array contains responses.
-  });
-
-  // const responses = await Promise.all(
-  //   designatedPoints.map(async (point,index) => {
-      
-  //     try {
-  //       console.log("Point: ", point)
-  //       // Add a delay of 1 second (1000 milliseconds) between requests
-  //       if (index > 0) {
-  //         console.log("waitING")
-  //         await new Promise(resolve => setTimeout(resolve, 900));
-  //       }
-        
-  //       const fixUrl = `http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`;
-  //       const navaidUrl = `http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`;
-  
-  //       const fixResponse = await axios.get(fixUrl);
-  //       const navaidResponse = await axios.get(navaidUrl);
-  //       console.log("fix Response for ", point +":")
-  //       console.log(fixResponse)
-  //       console.log("navaids Response for ", point +":")
-  //       console.log(navaidResponse)
-  //       return {
-  //         point,
-  //         fixData: fixResponse.data,
-  //         navaidData: navaidResponse.data,
-  //       };
-  //     } catch (error) {
-  //       return {
-  //         point,
-  //         error: error,
-  //       };
-  //     }
-  //   })
-  // );
-
-  console.log("REsponse: ",responses)
-
+  processItems()
   
 } else {
   console.log('No matching flight plan found with "filedRoute" containing "routeText" or "routeElement.');
@@ -138,6 +97,16 @@ catch (error) {
       
       <button  type="submit" className="btn btn-primary">Submit</button>
       </form>
+
+      <div>
+      <h2>Results:</h2>
+          <ul>
+            {results.map((result, index) => (
+              <li key={index}>{result}</li>
+            ))}
+          </ul>
+          {results.length === 0 && <p>No results to display.</p>}
+      </div>
     </div>
   );
 }
