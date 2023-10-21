@@ -12,14 +12,14 @@ function FlightPlan() {
   }, [results]);
 
 	const handleInputChange = (e) => {
+
 		setFlightNumber(e.target.value);}
 
 
 	const handleSubmit = async(e) => {
 			e.preventDefault();
-			// You can perform any additional actions or validation here
+			
 			console.log('Flight Number submitted:', flightNumber);
-
       const apiUrl ="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
 
 try{
@@ -29,11 +29,11 @@ try{
   plan.aircraftIdentification.toLowerCase() === flightNumber.toLowerCase()
 );
 
-// Find the first flight plan with a "filedRoute" containing "routeText" or "routeElement"
+
 const firstMatchingFlightPlan = filteredFlightPlan.find((plan) =>
   plan.filedRoute && (plan.filedRoute.routeText || plan.filedRoute.routeElement)
 );
-console.log("first Flight plan: ",firstMatchingFlightPlan)
+
 if (firstMatchingFlightPlan) {
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
@@ -53,9 +53,7 @@ if (firstMatchingFlightPlan) {
       const transformedData = [];
       if (data.length>0){
         for(const item of data){
-          const parts = item.split(' '); // Split the item by space
-        if (parts.length === 2) {
-          
+          const parts = item.split(' '); // Split the item by space        
           const [key, value] = parts; // Separate key and value
           if (key!==point){
             console.log("key not equal point")
@@ -72,24 +70,20 @@ if (firstMatchingFlightPlan) {
           };
        
           transformedData.push(obj);
-        }
+        
+        } //end of for loop line 55
+
+        if (!callNavaids){
+          setResults((prevResults) => [...prevResults, transformedData]);
         }
 
 
         if (callNavaids){
-          console.log("HEskd!!")
           const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
           const response = await fetch(apiNavaids);
       const data = await response.json();
-      console.log("after calling navaids:")
-      console.log(data)
-      console.log("above is data from api navaids")
-      const transformedData = [];
       for(const item of data){
-        const parts = item.split(' '); // Split the item by space
-        console.log("parts split into 2: ", parts)
-      if (parts.length === 2) {
-        
+        const parts = item.split(' '); // Split the item by space     
         const [key, value] = parts; // Separate key and value
         
         const temp=value.slice(1,-1)
@@ -104,12 +98,17 @@ if (firstMatchingFlightPlan) {
         transformedData.push(obj);
         console.log("VPK transformed data")
         console.log(transformedData)
-      }
+      
       }
       setResults((prevResults) => [...prevResults, transformedData]);
-        }
+      callNavaids=false
+        } //end of calling navaids
 
-        setResults((prevResults) => [...prevResults, transformedData]);
+        
+      }// end of if cannot find data in fixes
+
+      else{
+        //call navaids endpoint
       }
       
       
@@ -138,14 +137,11 @@ if (firstMatchingFlightPlan) {
 }
 
 catch (error) {
-  // Handle any errors here
+  
   console.error('API Error IN FlightPlans.jsx file:', error);
 }
+}; //end of handleSubmit
 
-
-
-
-		      };
 
   return (
 	<div className="container">
