@@ -39,39 +39,67 @@ if (firstMatchingFlightPlan) {
   const designatedPoints =['PIBAP',  'VPK',"GOLUD",'NOMEP',"KIGOB"]
   //const designatedPoints =[ 'VPK',"KIGOB"]
   console.log(designatedPoints)
-  const responses = await Promise.all(
-    designatedPoints.map(async (point,index) => {
-      
-      try {
-        console.log("Point: ", point)
-        // Add a delay of 1 second (1000 milliseconds) between requests
-        if (index > 0) {
-          console.log("waitING")
-          await new Promise(resolve => setTimeout(resolve, 900));
-        }
-        
-        const fixUrl = `http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`;
-        const navaidUrl = `http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`;
+  const results = [];
+  async function makeApiRequest(point) {
+    try {
+      const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
+      console.log("apiEndPoint: ", apiEndPoint)
+      const response = await fetch(apiEndPoint);
+      const data = await response.json();
+      results.push(data);
+    } catch (error) {
+      console.error(`Error for point ${point}: ${error}`);
+    }
+  }
+
+  async function processItems() {
+    for (const item of designatedPoints) {
+      console.log("Here: ")
+      console.log(item)
+      await makeApiRequest(item);
+      // Add a delay or rate-limiting logic here to respect API limits.
+    }
+  }
   
-        const fixResponse = await axios.get(fixUrl);
-        const navaidResponse = await axios.get(navaidUrl);
-        console.log("fix Response for ", point +":")
-        console.log(fixResponse)
-        console.log("navaids Response for ", point +":")
-        console.log(navaidResponse)
-        return {
-          point,
-          fixData: fixResponse.data,
-          navaidData: navaidResponse.data,
-        };
-      } catch (error) {
-        return {
-          point,
-          error: error,
-        };
-      }
-    })
-  );
+  processItems().then(() => {
+    console.log("API query completed")
+    console.log("Results are as such: ", results)
+    // All API requests are completed here, and results array contains responses.
+  });
+
+  // const responses = await Promise.all(
+  //   designatedPoints.map(async (point,index) => {
+      
+  //     try {
+  //       console.log("Point: ", point)
+  //       // Add a delay of 1 second (1000 milliseconds) between requests
+  //       if (index > 0) {
+  //         console.log("waitING")
+  //         await new Promise(resolve => setTimeout(resolve, 900));
+  //       }
+        
+  //       const fixUrl = `http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`;
+  //       const navaidUrl = `http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`;
+  
+  //       const fixResponse = await axios.get(fixUrl);
+  //       const navaidResponse = await axios.get(navaidUrl);
+  //       console.log("fix Response for ", point +":")
+  //       console.log(fixResponse)
+  //       console.log("navaids Response for ", point +":")
+  //       console.log(navaidResponse)
+  //       return {
+  //         point,
+  //         fixData: fixResponse.data,
+  //         navaidData: navaidResponse.data,
+  //       };
+  //     } catch (error) {
+  //       return {
+  //         point,
+  //         error: error,
+  //       };
+  //     }
+  //   })
+  // );
 
   console.log("REsponse: ",responses)
 
