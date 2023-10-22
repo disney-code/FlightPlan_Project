@@ -5,7 +5,7 @@ function FlightPlan() {
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
 	const [flightNumber, setFlightNumber] = useState('');
   
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState({});
 
   useEffect(() => {
     console.log("Results have been updated:", results);
@@ -52,29 +52,30 @@ if (firstMatchingFlightPlan) {
       const response = await fetch(apiEndPoint);
       const data = await response.json();
       const transformedData = [];
-
+      let key;
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space        
-          const [key, value] = parts; // Separate key and value
+          const [currentKey, value] = parts; // Separate key and value
           
-          if (key!==point){
+          if (currentKey!==point){
             callNavaids=true
             break
           }
+          key = currentKey;
           const temp=value.slice(1,-1)
           const [x,y] = temp.split(',').map(Number)
-          const obj = {
-            [key]:  [x,y] 
-            
-          };
+          
        
-          transformedData.push(obj);
+          transformedData.push([x,y]);
         
         } //end of for loop line 55
 
         if (!callNavaids){
-          setResults((prevResults) => [...prevResults, transformedData]);
+          setResults((prevResults) =>({
+            ...prevResults,
+            [key]: transformedData,
+          }) );
         }
 
 
@@ -82,18 +83,21 @@ if (firstMatchingFlightPlan) {
           const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
           const response = await fetch(apiNavaids);
       const data = await response.json();
+      let key2;
       for(const item of data){
         const parts = item.split(' '); // Split the item by space     
-        const [key, value] = parts; // Separate key and value
+        const [currentKey, value] = parts; // Separate key and value
+        key2=currentKey
         const temp=value.slice(1,-1)
         const [x,y] = temp.split(',').map(Number)
-        const obj = {
-          [key]:  [x,y] 
-          
-        };     
-        transformedData.push(obj);
+        transformedData.push([x,y]);
       }
-      setResults((prevResults) => [...prevResults, transformedData]);
+      
+      setResults((prevResults) =>({
+        ...prevResults,
+        [key2]: transformedData,
+      }) );
+     
       callNavaids=false
         } //end of calling navaids
 
@@ -110,24 +114,24 @@ console.log("querying navaids because fixes return [] for point: ", point)
       if(point==="TOPIR"){
         console.log("data response from querying TOPIR at navaids: ", data)
       }
-
+      let key3;
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space     
-          const [key, value] = parts; // Separate key and value
-          
+          const [currentKey, value] = parts; // Separate key and value
+          key3=currentKey
           const temp=value.slice(1,-1)
           const [x,y] = temp.split(',').map(Number)
-          const obj = {
-            [key]:  [x,y] 
-            
-          };
-          transformedData.push(obj);
+         
+          transformedData.push([x,y]);
           console.log("for TOPIR, data is below")
           console.log(transformedData)
         }
   
-        setResults((prevResults) => [...prevResults, transformedData]);
+        setResults((prevResults) =>({
+          ...prevResults,
+          [key3]: transformedData,
+        }) );
       }
       else{
         transformedData.push({[point]: []});
@@ -190,7 +194,7 @@ catch (error) {
       </form>
 
       <div>
-      {results.map((item, index) => (
+      {/* {results.map((item, index) => (
         <ul key={index}>
           {item.map((result, subIndex) => (
             <li key={subIndex}>
@@ -202,7 +206,7 @@ catch (error) {
             </li>
           ))}
         </ul>
-      ))}
+      ))} */}
       </div>
     </div>
   );

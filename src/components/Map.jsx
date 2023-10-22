@@ -11,17 +11,18 @@ import { renderToStaticMarkup } from 'react-dom/server'; // Import renderToStati
 import FilledCircleMarker from './FilledCircleMarker';
 function Map(){
 	const data = {
-		VCBI:[7.18,79.89],
 		KAT: [7.16, 79.87],
-		SULEN: [4.41, 90.4],
+		VCBI:[7.18,79.89],
 		MABIX: [3.27, 94.85],
+		SULEN: [4.41, 90.4],
+		
 		OKABU: [3.44, 97.61],
 		SALAX: [2.21, 101.56],
 		BATAR: [2.17, 102.09],
 		ARAMA: [1.61, 103.12],
 		WSSS: [1.36,103.99],
 	      };
-	      const waypoints = Object.values(data);     
+	const waypoints = Object.values(data);     
 	  
 	console.log("Below is the extraction Charlene:")
 	// console.log(waypoints);
