@@ -40,25 +40,23 @@ if (firstMatchingFlightPlan) {
 
   
   const designatedPoints = routeElement.map(route => route.position.designatedPoint);
-  console.log(designatedPoints)
+  console.log("Designated Points: ",designatedPoints)
   
   async function makeApiRequest(point) {
     try {
+      
       let callNavaids=false;
-      console.log("POinT: ", point)
-      console.log("type of point: ", typeof point)
       const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
       const response = await fetch(apiEndPoint);
       const data = await response.json();
       const transformedData = [];
+
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space        
           const [key, value] = parts; // Separate key and value
+          
           if (key!==point){
-            console.log("key not equal point")
-            console.log("key is: ", key)
-            console.log("PoInT is: ", point)
             callNavaids=true
             break
           }
@@ -85,20 +83,13 @@ if (firstMatchingFlightPlan) {
       for(const item of data){
         const parts = item.split(' '); // Split the item by space     
         const [key, value] = parts; // Separate key and value
-        
         const temp=value.slice(1,-1)
         const [x,y] = temp.split(',').map(Number)
         const obj = {
           [key]:  [x,y] 
           
-        };
-        console.log("pls u may see VPK below: ")
-        console.log(obj)
-     
+        };     
         transformedData.push(obj);
-        console.log("VPK transformed data")
-        console.log(transformedData)
-      
       }
       setResults((prevResults) => [...prevResults, transformedData]);
       callNavaids=false
@@ -108,11 +99,41 @@ if (firstMatchingFlightPlan) {
       }// end of if cannot find data in fixes
 
       else{
-        //call navaids endpoint
+       // query to navaids
+console.log("querying navaids because fixes return [] for point: ", point)
+       const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
+          const response = await fetch(apiNavaids);
+      const data = await response.json();
+
+      if(point==="TOPIR"){
+        console.log("data response from querying TOPIR at navaids: ", data)
+      }
+
+      if (data.length>0){
+        for(const item of data){
+          const parts = item.split(' '); // Split the item by space     
+          const [key, value] = parts; // Separate key and value
+          
+          const temp=value.slice(1,-1)
+          const [x,y] = temp.split(',').map(Number)
+          const obj = {
+            [key]:  [x,y] 
+            
+          };
+          transformedData.push(obj);
+          console.log("for TOPIR, data is below")
+          console.log(transformedData)
+        }
+  
+        setResults((prevResults) => [...prevResults, transformedData]);
+      }
+      else{
+        transformedData.push({[point]: []});
+        setResults((prevResults) => [...prevResults, transformedData]);
       }
       
       
-    } catch (error) {
+    } }catch (error) {
       console.error(`Error for point ${point}: ${error}`);
     }
   }
@@ -161,15 +182,21 @@ catch (error) {
       <button  type="submit" className="btn btn-primary">Submit</button>
       </form>
 
-      {/* <div>
-      <h2>Results:</h2>
-          <ul>
-            {results.map((result, index) => (
-              <li key={index}>{result}</li>
-            ))}
-          </ul>
-          {results.length === 0 && <p>No results to display.</p>}
-      </div> */}
+      <div>
+      {results.map((item, index) => (
+        <ul key={index}>
+          {item.map((result, subIndex) => (
+            <li key={subIndex}>
+              {Object.keys(result).map((key) => (
+                <div key={key}>
+                  {key}: [{result[key].join(', ')}]
+                </div>
+              ))}
+            </li>
+          ))}
+        </ul>
+      ))}
+      </div>
     </div>
   );
 }
