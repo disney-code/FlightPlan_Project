@@ -2,6 +2,7 @@ import {useState,useEffect} from 'react';
 import axios from 'axios';
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
+  const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
 	const [flightNumber, setFlightNumber] = useState('');
   
   const [results, setResults] = useState([]);
@@ -13,28 +14,25 @@ function FlightPlan() {
 
 	const handleInputChange = (e) => {
 
-		setFlightNumber(e.target.value);}
+		setFlightNumber(e.target.value);
+  }
 
 
 	const handleSubmit = async(e) => {
 			e.preventDefault();
-			
-			console.log('Flight Number submitted:', flightNumber);
-      const apiUrl ="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
-
+      
 try{
-  const response = await axios.get(apiUrl);
+  const response = await axios.get(flightPlanUrl);
   const allFlightPlans = response.data;
+  //filtered Flight plan will have multiple eg SIA469
   const filteredFlightPlan = allFlightPlans.filter((plan) =>
   plan.aircraftIdentification.toLowerCase() === flightNumber.toLowerCase()
 );
-
-
+//flightMatchingFlightPlan will have one flight plan of eg SIA469
 const firstMatchingFlightPlan = filteredFlightPlan.find((plan) =>
   plan.filedRoute && (plan.filedRoute.routeText || plan.filedRoute.routeElement)
 );
-console.log("firstMatchingFlightPlan: ")
-console.log(firstMatchingFlightPlan)
+
 if (firstMatchingFlightPlan) {
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
   const {destinationAerodrome}=firstMatchingFlightPlan.arrival
@@ -152,7 +150,7 @@ console.log("querying navaids because fixes return [] for point: ", point)
   
   processItems()
 
-  
+
 
 
 
