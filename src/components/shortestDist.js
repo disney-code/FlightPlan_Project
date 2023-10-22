@@ -35,7 +35,7 @@ function findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES) {
 	      if (distance < minDistance) {
 		minDistance = distance;
 		closestKAT = {
-		  coordinates: coord,
+		  [key]: coord,
 		  
 		};
 	      }
@@ -45,10 +45,11 @@ function findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES) {
       console.log("cloest coordinate: ")
       console.log(closestKAT)
 	return closestKAT;
+	//closestKAT looks like { OKABU: [ 3.27, 94.85 ] }
       }
       
       // Export the function to use it in your React component
-export { findClosestKAT };
+module.exports = {  findClosestKAT };
 // const NAVAID_COORDINATES = {
 // 	KAT: [
 // 		[7.48, 28.31],

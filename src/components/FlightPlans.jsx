@@ -178,6 +178,9 @@ catch (error) {
   console.error('API Error IN FlightPlans.jsx file:', error);
 } //catch for catching failure to retrive flight plans
 
+//check if results variable has object with more than one coordinates
+
+
 }; //end of handleSubmit
 
 
