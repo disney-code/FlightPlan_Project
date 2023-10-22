@@ -5,7 +5,7 @@ function FlightPlan() {
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
 	const [flightNumber, setFlightNumber] = useState('');
   
-  const [results, setResults] = useState({});
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
     console.log("Results have been updated:", results);
@@ -72,10 +72,11 @@ if (firstMatchingFlightPlan) {
         } //end of for loop line 55
 
         if (!callNavaids){
-          setResults((prevResults) =>({
+          let newObj={[point]:transformedData}
+          setResults((prevResults) =>[
             ...prevResults,
-            [key]: transformedData,
-          }) );
+            newObj
+          ] );
         }
 
 
@@ -87,16 +88,17 @@ if (firstMatchingFlightPlan) {
       for(const item of data){
         const parts = item.split(' '); // Split the item by space     
         const [currentKey, value] = parts; // Separate key and value
-        key2=currentKey
+        
         const temp=value.slice(1,-1)
         const [x,y] = temp.split(',').map(Number)
         transformedData.push([x,y]);
       }
       
-      setResults((prevResults) =>({
-        ...prevResults,
-        [key2]: transformedData,
-      }) );
+      let newObj={[point]:transformedData}
+      setResults((prevResults) =>[
+            ...prevResults,
+            newObj
+          ] );
      
       callNavaids=false
         } //end of calling navaids
@@ -114,12 +116,11 @@ console.log("querying navaids because fixes return [] for point: ", point)
       if(point==="TOPIR"){
         console.log("data response from querying TOPIR at navaids: ", data)
       }
-      let key3;
+      
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space     
           const [currentKey, value] = parts; // Separate key and value
-          key3=currentKey
           const temp=value.slice(1,-1)
           const [x,y] = temp.split(',').map(Number)
          
@@ -128,14 +129,19 @@ console.log("querying navaids because fixes return [] for point: ", point)
           console.log(transformedData)
         }
   
-        setResults((prevResults) =>({
-          ...prevResults,
-          [key3]: transformedData,
-        }) );
+        let newObj={[point]:transformedData}
+      setResults((prevResults) =>[
+            ...prevResults,
+            newObj
+          ] );
       }
       else{
-        transformedData.push({[point]: []});
-        setResults((prevResults) => [...prevResults, transformedData]);
+        transformedData.push([]);
+        let newObj={[point]:transformedData}
+      setResults((prevResults) =>[
+            ...prevResults,
+            newObj
+          ] );
       }
       
       
