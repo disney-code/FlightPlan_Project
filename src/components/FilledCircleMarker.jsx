@@ -3,8 +3,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 const FilledCircleMarker = ({ name }) => {
   return (
     <svg
-      height="60"
-      width="60"
+      height="100"
+      width="100"
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
     >

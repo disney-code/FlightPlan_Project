@@ -33,12 +33,16 @@ try{
 const firstMatchingFlightPlan = filteredFlightPlan.find((plan) =>
   plan.filedRoute && (plan.filedRoute.routeText || plan.filedRoute.routeElement)
 );
-
+console.log("firstMatchingFlightPlan: ")
+console.log(firstMatchingFlightPlan)
 if (firstMatchingFlightPlan) {
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
+  const {destinationAerodrome}=firstMatchingFlightPlan.arrival
+  const {departureAerodrome}=firstMatchingFlightPlan.departure
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
-
-  
+  console.log("departure Aerodrome: ", departureAerodrome)
+  console.log("Destination Aerodrome: ", destinationAerodrome)
+  console.log(routeText)
   const designatedPoints = routeElement.map(route => route.position.designatedPoint);
   console.log("Designated Points: ",designatedPoints)
   
@@ -148,6 +152,10 @@ console.log("querying navaids because fixes return [] for point: ", point)
   
   processItems()
 
+  
+
+
+
  
   
 } else {
@@ -160,7 +168,8 @@ console.log("querying navaids because fixes return [] for point: ", point)
 catch (error) {
   
   console.error('API Error IN FlightPlans.jsx file:', error);
-}
+} //catch for catching failure to retrive flight plans
+
 }; //end of handleSubmit
 
 
