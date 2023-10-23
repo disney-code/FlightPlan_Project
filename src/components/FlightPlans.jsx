@@ -1,5 +1,6 @@
 import {useState,useEffect} from 'react';
 import axios from 'axios';
+import { apiCallNavOrFix } from './callFixesApi';
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
@@ -34,25 +35,21 @@ const firstMatchingFlightPlan = filteredFlightPlan.find((plan) =>
 );
 
 if (firstMatchingFlightPlan) {
+  // if you can get into this if block, it means there is a route for this flight number
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
   const {destinationAerodrome}=firstMatchingFlightPlan.arrival
   const {departureAerodrome}=firstMatchingFlightPlan.departure
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
-  console.log("departure Aerodrome: ", departureAerodrome)
-  console.log("Destination Aerodrome: ", destinationAerodrome)
-  console.log(routeText)
   const designatedPoints = routeElement.map(route => route.position.designatedPoint);
   console.log("Designated Points: ",designatedPoints)
-  
   async function makeApiRequest(point) {
     try {
       
       let callNavaids=false;
       const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
       const response = await fetch(apiEndPoint);
-      const data = await response.json();
+      const data = await response.json();     
       const transformedData = [];
-      let key;
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space        
@@ -62,7 +59,6 @@ if (firstMatchingFlightPlan) {
             callNavaids=true
             break
           }
-          key = currentKey;
           const temp=value.slice(1,-1)
           const [x,y] = temp.split(',').map(Number)
           
@@ -84,7 +80,6 @@ if (firstMatchingFlightPlan) {
           const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
           const response = await fetch(apiNavaids);
       const data = await response.json();
-      let key2;
       for(const item of data){
         const parts = item.split(' '); // Split the item by space     
         const [currentKey, value] = parts; // Separate key and value
@@ -145,7 +140,9 @@ console.log("querying navaids because fixes return [] for point: ", point)
       }
       
       
-    } }catch (error) {
+    } } // end of trying to query API
+    catch (error) {
+      // call to API fail for this point
       console.error(`Error for point ${point}: ${error}`);
     }
   }

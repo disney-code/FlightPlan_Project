@@ -72,7 +72,7 @@ for (let i = 0; i < resultObjects.length; i += 2) {
 
 console.log("finaL ArRay: ",finalArray)
 
-
+// if no duplicated coordinates, finalArray is []
 
 
 
