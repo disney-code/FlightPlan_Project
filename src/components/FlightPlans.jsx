@@ -46,24 +46,30 @@ if (firstMatchingFlightPlan) {
     try {
       
       let callNavaids=false;
-      const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
-      const response = await fetch(apiEndPoint);
-      const data = await response.json();     
+      // const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
+      // const response = await fetch(apiEndPoint);
+      // const data = await response.json();  
+      const data = await apiCallNavOrFix("fixes",point)
+      // data may look like ['REVOP (7.48,28.31)', 'REVOP (-30.55,116.63)'] or ['JULIM (-31.42,116.29)']
       const transformedData = [];
       if (data.length>0){
+        // if you get into this block, means they found some data from the API call
         for(const item of data){
-          const parts = item.split(' '); // Split the item by space        
+          // item could be a string like 'REVOP (7.48,28.31)'
+          const parts = item.split(' '); // Split the item by space   
+          // parts become an array like ['REVOP', '(7.48,28.31)']     
           const [currentKey, value] = parts; // Separate key and value
-          
+          // currentKey ='REVOP' and value = '(7.48,28.31)'
           if (currentKey!==point){
             callNavaids=true
             break
           }
           const temp=value.slice(1,-1)
+          // value.slice(1,-1) removes the first and last character
           const [x,y] = temp.split(',').map(Number)
-          
-       
+          // temp.split(',') returns an array ['1.78','2.10']
           transformedData.push([x,y]);
+          //transformedData is an array for a Particular point
         
         } //end of for loop line 55
 
@@ -77,13 +83,14 @@ if (firstMatchingFlightPlan) {
 
 
         if (callNavaids){
-          const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
-          const response = await fetch(apiNavaids);
-      const data = await response.json();
+      //     const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
+      //     const response = await fetch(apiNavaids);
+      // const data = await response.json();
+      const data = await apiCallNavOrFix("navaids",point)
+      // data can look like ['KAT (13.03,7.69)', 'KAT (-33.71,150.30)', 'KAT (7.16,79.87)']
       for(const item of data){
         const parts = item.split(' '); // Split the item by space     
         const [currentKey, value] = parts; // Separate key and value
-        
         const temp=value.slice(1,-1)
         const [x,y] = temp.split(',').map(Number)
         transformedData.push([x,y]);
@@ -99,15 +106,15 @@ if (firstMatchingFlightPlan) {
         } //end of calling navaids
 
         
-      }// end of if cannot find data in fixes
+      }// end of if CAN find data in fixes
 
       else{
        // query to navaids
 console.log("querying navaids because fixes return [] for point: ", point)
-       const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
-          const response = await fetch(apiNavaids);
-      const data = await response.json();
-
+      //  const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
+      //     const response = await fetch(apiNavaids);
+      // const data = await response.json();
+      const data = await apiCallNavOrFix("fixes",point)
       if(point==="TOPIR"){
         console.log("data response from querying TOPIR at navaids: ", data)
       }
@@ -120,8 +127,7 @@ console.log("querying navaids because fixes return [] for point: ", point)
           const [x,y] = temp.split(',').map(Number)
          
           transformedData.push([x,y]);
-          console.log("for TOPIR, data is below")
-          console.log(transformedData)
+          
         }
   
         let newObj={[point]:transformedData}
@@ -156,7 +162,9 @@ console.log("querying navaids because fixes return [] for point: ", point)
   }
   
   processItems()
+  // after processItems() complete, your results variable is updated, you may need to call 
 
+  console.log("Do i see this mANy times?")
 
 
 
@@ -168,7 +176,7 @@ console.log("querying navaids because fixes return [] for point: ", point)
 }
 
 
-}
+ } // end of try
 
 catch (error) {
   
