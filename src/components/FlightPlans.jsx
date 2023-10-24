@@ -7,11 +7,16 @@ function FlightPlan() {
 	const [flightNumber, setFlightNumber] = useState('');
   
   const [results, setResults] = useState([]);
-
+  const [loopDone,setLoopDone] = useState(false); 
   useEffect(() => {
-    console.log("Results have been updated:", results);
+    console.log("below shld be loopDOne is FALSE. on line 12")
+    console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
+    if (loopDone){
+      console.log("below shld be loopDOne is TRUE. on line 15")
+      console.log(console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
+      )
 
-  }, [results]);
+  }}, [results,loopDone]);
 
 	const handleInputChange = (e) => {
 
@@ -155,20 +160,21 @@ console.log("querying navaids because fixes return [] for point: ", point)
 
   async function processItems() {
     for (const item of designatedPoints) {
-      
       await makeApiRequest(item);
-      // Add a delay or rate-limiting logic here to respect API limits.
+      
     }
+
+// console.log(results)
   }
   
-  processItems()
+  processItems().then(()=>{
+    console.log('processItems line 171 . then executed JA')
+    console.log("line 172, loopDone: ", loopDone)
+    setLoopDone(true)
+    console.log("line 174, loopDone: ", loopDone)
+  })
   // after processItems() complete, your results variable is updated, you may need to call 
-
-  console.log("Do i see this mANy times?")
-
-
-
-
+ 
  
   
 } else {
