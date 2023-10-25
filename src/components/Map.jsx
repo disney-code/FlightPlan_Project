@@ -8,30 +8,43 @@ import './map.css';
 import { renderToStaticMarkup } from 'react-dom/server'; // Import renderToStaticMarkup
 import FilledCircleMarker from './FilledCircleMarker';
 function Map(){
+	
+	//cleanedResults look like the data given below
+	// const data = {
+		
+	// 	VCBI:[7.18,79.89],
+	// 	KAT: [7.16, 79.87],
+	// 	MABIX: [3.27, 94.85],
+	// 	SULEN: [4.41, 90.4],
+		
+	// 	OKABU: [3.44, 97.61],
+	// 	SALAX: [2.21, 101.56],
+	// 	BATAR: [2.17, 102.09],
+	// 	ARAMA: [1.61, 103.12],
+	// 	WSSS: [1.36,103.99],
+	//       };
 	const data = {
 		
-		VCBI:[7.18,79.89],
-		KAT: [7.16, 79.87],
-		MABIX: [3.27, 94.85],
-		SULEN: [4.41, 90.4],
+		ANITO:[-0.28,104.87],
+		PKP: [-2.17,106.14],
+		LAMOB: [-12,108.88],
+		IDOKU: [-18.26,111.11],
 		
-		OKABU: [3.44, 97.61],
-		SALAX: [2.21, 101.56],
-		BATAR: [2.17, 102.09],
-		ARAMA: [1.61, 103.12],
-		WSSS: [1.36,103.99],
+		
+		REVOP: [-30.55,11],
+		
 	      };
 	const waypoints = Object.values(data);
 	//waypoints is the values of the keys 
 	//waypoints = [[7.16, 79.87],[7.18, 79.89],[3.27, 94.85],...,[1.36, 103.99]]   
 	const [mapBounds, setMapBounds] = useState(null);
 	useEffect(() => {
-		if (waypoints.length > 0) {
+		if (waypoints.length > 0 ) {
 		  const bounds = latLngBounds(waypoints);
 		  console.log("bounds: ", bounds)
 		  setMapBounds(bounds);
 		}
-	      }, [waypoints]);
+	      }, []);
 
 	return(
 		<div>

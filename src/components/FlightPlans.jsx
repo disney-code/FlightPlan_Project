@@ -2,7 +2,8 @@ import {useState,useEffect} from 'react';
 import axios from 'axios';
 import { apiCallNavOrFix } from './callFixesApi';
 import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
-
+import {replaceObjects} from './cleanUpPointsNoduplicate'
+import Map from './Map';
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
@@ -10,17 +11,21 @@ function FlightPlan() {
   
   const [results, setResults] = useState([]);
   const [loopDone,setLoopDone] = useState(false); 
+  const [cleanedResults, setCleanedResults] = useState([]);
   useEffect(() => {
-    // console.log("below shld be loopDOne is FALSE. on line 12")
-    // console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
     if (loopDone){
-      console.log("Should only see final results. results: ", results)
-      console.log("below shld be loopDOne is TRUE. on line 15")
-      console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
-      //call to pickOutMultiple.jsx 
-      console.log("Calling the findObjectsWithMultipleCoordinates below:")
-      console.log(findObjectsWithMultipleCoordinates(results))
-
+      console.log("results shown below, line 15: ")
+      console.log(results)
+      const filteredResults = findObjectsWithMultipleCoordinates(results)
+      // filteredResults contain the multiple coordinates points with one of thier coordinate only
+      console.log(filteredResults)
+      // filteredResults = [{REVOP: [-30.55, 116.63]}]
+      // give filteredResults + results into replaceObjects function and get the output 
+      const newCleanedResults = replaceObjects(results, filteredResults)
+      setCleanedResults(newCleanedResults); // Update the state with cleanedResults
+      console.log("Below is the cleaned up results: ")
+      console.log(newCleanedResults)
+      
   }}, [results,loopDone]);
 
 	const handleInputChange = (e) => {
@@ -31,6 +36,7 @@ function FlightPlan() {
 
 	const handleSubmit = async(e) => {
 			e.preventDefault();
+      console.log("Submit button clicked")
       
 try{
   const response = await axios.get(flightPlanUrl);
@@ -124,8 +130,8 @@ console.log("querying navaids because fixes return [] for point: ", point)
       //  const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
       //     const response = await fetch(apiNavaids);
       // const data = await response.json();
-      const data = await apiCallNavOrFix("fixes",point)
-      if(point==="TOPIR"){
+      const data = await apiCallNavOrFix("navaids",point)
+      if(point==="PKP"){
         console.log("data response from querying TOPIR at navaids: ", data)
       }
       
@@ -168,7 +174,6 @@ console.log("querying navaids because fixes return [] for point: ", point)
       await makeApiRequest(item);
       
     }
-
 // console.log(results)
   }
   
@@ -217,7 +222,9 @@ catch (error) {
       
       <button  type="submit" className="btn btn-primary">Submit</button>
       </form>
-
+      <div>
+        
+      </div>
       <div>
       {/* {results.map((item, index) => (
         <ul key={index}>

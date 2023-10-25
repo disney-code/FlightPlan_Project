@@ -28,19 +28,19 @@ function replaceObjects(resultObjects, finalArray) {
 	
 	return updatedResultObjects;
       }
-      
+module.exports = {replaceObjects};
       // Example data resultObjects is from flightPlans.jsx
-const resultObjects = [
-	{ KAT: [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]] },
-	{ SULEN: [[4.41, 90.4]] },
-	{ OKABU: [[3.27, 94.85], [3.27, 94.85]] },
-	{ ARAMA: [[-33.71, 150.3]] }
-      ];
+// const resultObjects = [
+// 	{ KAT: [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]] },
+// 	{ SULEN: [[4.41, 90.4]] },
+// 	{ OKABU: [[3.27, 94.85], [3.27, 94.85]] },
+// 	{ ARAMA: [[-33.71, 150.3]] }
+//       ];
 //finalArray is from pickOutMultiple.jsx
-const finalArray = [{ KAT: [7.16, 79.87] }, { OKABU: [3.27, 94.85] }];
+// const finalArray = [{ KAT: [7.16, 79.87] }, { OKABU: [3.27, 94.85] }];
       
-const updatedResultObjects = replaceObjects(resultObjects, finalArray);
-console.log(updatedResultObjects);
+// const updatedResultObjects = replaceObjects(resultObjects, finalArray);
+// console.log(updatedResultObjects);
       
 // updatedResultObjects = [
 // 	{ KAT: [ 7.16, 79.87 ] },
