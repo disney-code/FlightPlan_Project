@@ -1,6 +1,8 @@
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import { apiCallNavOrFix } from './callFixesApi';
+import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
+
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
@@ -9,12 +11,15 @@ function FlightPlan() {
   const [results, setResults] = useState([]);
   const [loopDone,setLoopDone] = useState(false); 
   useEffect(() => {
-    console.log("below shld be loopDOne is FALSE. on line 12")
-    console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
+    // console.log("below shld be loopDOne is FALSE. on line 12")
+    // console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
     if (loopDone){
+      console.log("Should only see final results. results: ", results)
       console.log("below shld be loopDOne is TRUE. on line 15")
-      console.log(console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
-      )
+      console.log("in useEffect, loopDone is: ", loopDone, " results: ", results)
+      //call to pickOutMultiple.jsx 
+      console.log("Calling the findObjectsWithMultipleCoordinates below:")
+      console.log(findObjectsWithMultipleCoordinates(results))
 
   }}, [results,loopDone]);
 
@@ -168,10 +173,10 @@ console.log("querying navaids because fixes return [] for point: ", point)
   }
   
   processItems().then(()=>{
-    console.log('processItems line 171 . then executed JA')
-    console.log("line 172, loopDone: ", loopDone)
+    
     setLoopDone(true)
-    console.log("line 174, loopDone: ", loopDone)
+    console.log("in line 174, chceck what is LoopDone: ", loopDone)
+   
   })
   // after processItems() complete, your results variable is updated, you may need to call 
  
