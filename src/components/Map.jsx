@@ -31,7 +31,8 @@ function Map(){
 		IDOKU: [-18.26,111.11],
 		
 		
-		REVOP: [-30.55,11],
+		REVOP: [-30.55,116.63],
+		JULIM:[-31.42,116.29]
 		
 	      };
 	const waypoints = Object.values(data);

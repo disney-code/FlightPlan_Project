@@ -4,6 +4,14 @@ import { apiCallNavOrFix } from './callFixesApi';
 import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
 import {replaceObjects} from './cleanUpPointsNoduplicate'
 import Map from './Map';
+
+// function removeObjectsWithEmptyArrays(arrayOfObjects) {
+//   return arrayOfObjects.filter(obj => obj.value.length > 0);
+// }
+
+function removeObjectsWithEmptyValues(arr) {
+  return arr.filter(obj => Object.values(obj)[0].length > 0);
+}
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
@@ -23,9 +31,18 @@ function FlightPlan() {
       // give filteredResults + results into replaceObjects function and get the output 
       const newCleanedResults = replaceObjects(results, filteredResults)
       setCleanedResults(newCleanedResults); // Update the state with cleanedResults
-      console.log("Below is the cleaned up results: ")
+      console.log("Below is the cleaned up results line 30: ")
       console.log(newCleanedResults)
+      //newCleanedResults=[{ANITO: [-0.28,104.87]},{PKP:[-2.17, 106.14]}]
+      console.log(newCleanedResults[0])
+      console.log("above is newCleanedResults[0]")
+      console.log(newCleanedResults[0]['ANITO'])
+      console.log(newCleanedResults[0].value)
       
+      // setCleanedResults(removeObjectsWithEmptyArrays(newCleanedResults))
+      // console.log("cleaned results lin 34: ")
+      console.log(removeObjectsWithEmptyValues(newCleanedResults))
+      console.log("line 52")
   }}, [results,loopDone]);
 
 	const handleInputChange = (e) => {
