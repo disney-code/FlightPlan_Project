@@ -19,8 +19,9 @@ function FlightPlan() {
   
   const [results, setResults] = useState([]);
   const [loopDone,setLoopDone] = useState(false); 
-  const [cleanedResults, setCleanedResults] = useState([]);
+  const [cleanedResults, setCleanedResults] = useState(null);
   useEffect(() => {
+    console.log("loopDone lin 24: ", loopDone)
     if (loopDone){
       console.log("results shown below, line 15: ")
       console.log(results)
@@ -30,18 +31,12 @@ function FlightPlan() {
       // filteredResults = [{REVOP: [-30.55, 116.63]}]
       // give filteredResults + results into replaceObjects function and get the output 
       const newCleanedResults = replaceObjects(results, filteredResults)
-      setCleanedResults(newCleanedResults); // Update the state with cleanedResults
-      console.log("Below is the cleaned up results line 30: ")
-      console.log(newCleanedResults)
+      //setCleanedResults(newCleanedResults); // Update the state with cleanedResults
+
       //newCleanedResults=[{ANITO: [-0.28,104.87]},{PKP:[-2.17, 106.14]}]
-      console.log(newCleanedResults[0])
-      console.log("above is newCleanedResults[0]")
-      console.log(newCleanedResults[0]['ANITO'])
-      console.log(newCleanedResults[0].value)
-      
-      // setCleanedResults(removeObjectsWithEmptyArrays(newCleanedResults))
-      // console.log("cleaned results lin 34: ")
+      // function called removeObjectsWithEmptyValues will objects with empty array
       console.log(removeObjectsWithEmptyValues(newCleanedResults))
+      setCleanedResults(removeObjectsWithEmptyValues(newCleanedResults))
       console.log("line 52")
   }}, [results,loopDone]);
 
@@ -56,6 +51,7 @@ function FlightPlan() {
       console.log("Submit button clicked")
       
 try{
+  console.log("line 54")
   const response = await axios.get(flightPlanUrl);
   const allFlightPlans = response.data;
   //filtered Flight plan will have multiple eg SIA469
