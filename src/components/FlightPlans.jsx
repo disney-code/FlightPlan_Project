@@ -21,23 +21,21 @@ function FlightPlan() {
   const [loopDone,setLoopDone] = useState(false); 
   const [cleanedResults, setCleanedResults] = useState(null);
   useEffect(() => {
-    console.log("loopDone lin 24: ", loopDone)
+    
     if (loopDone){
-      console.log("results shown below, line 15: ")
-      console.log(results)
       const filteredResults = findObjectsWithMultipleCoordinates(results)
       // filteredResults contain the multiple coordinates points with one of thier coordinate only
-      console.log(filteredResults)
+      
       // filteredResults = [{REVOP: [-30.55, 116.63]}]
       // give filteredResults + results into replaceObjects function and get the output 
       const newCleanedResults = replaceObjects(results, filteredResults)
       //setCleanedResults(newCleanedResults); // Update the state with cleanedResults
 
-      //newCleanedResults=[{ANITO: [-0.28,104.87]},{PKP:[-2.17, 106.14]}]
+      //newCleanedResults=[{ANITO: [-0.28,104.87]},{PKP:[-2.17, 106.14]},{TOPIR:[]},...]
       // function called removeObjectsWithEmptyValues will objects with empty array
-      console.log(removeObjectsWithEmptyValues(newCleanedResults))
+      
       setCleanedResults(removeObjectsWithEmptyValues(newCleanedResults))
-      console.log("line 52")
+      
   }}, [results,loopDone]);
 
 	const handleInputChange = (e) => {
@@ -51,9 +49,10 @@ function FlightPlan() {
       console.log("Submit button clicked")
       
 try{
-  console.log("line 54")
+  
   const response = await axios.get(flightPlanUrl);
   const allFlightPlans = response.data;
+  
   //filtered Flight plan will have multiple eg SIA469
   const filteredFlightPlan = allFlightPlans.filter((plan) =>
   plan.aircraftIdentification.toLowerCase() === flightNumber.toLowerCase()
@@ -139,8 +138,7 @@ if (firstMatchingFlightPlan) {
 
       else{
        // query to navaids
-console.log("querying navaids because fixes return [] for point: ", point)
-      //  const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
+//  const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
       //     const response = await fetch(apiNavaids);
       // const data = await response.json();
       const data = await apiCallNavOrFix("navaids",point)
@@ -187,7 +185,6 @@ console.log("querying navaids because fixes return [] for point: ", point)
       await makeApiRequest(item);
       
     }
-// console.log(results)
   }
   
   processItems().then(()=>{
