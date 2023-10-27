@@ -12,6 +12,15 @@ import Map from './Map';
 function removeObjectsWithEmptyValues(arr) {
   return arr.filter(obj => Object.values(obj)[0].length > 0);
 }
+
+function mergeObjects(arr) {
+  return arr.reduce((result, item) => {
+    const key = Object.keys(item)[0];
+    result[key] = item[key];
+    return result;
+  }, {});
+}
+
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
@@ -20,6 +29,13 @@ function FlightPlan() {
   const [results, setResults] = useState([]);
   const [loopDone,setLoopDone] = useState(false); 
   const [cleanedResults, setCleanedResults] = useState(null);
+  const dynamicData = {
+    
+    LAMOB: [-12, 108.88],
+    IDOKU: [-18.26, 111.11],
+    REVOP: [-30.55, 116.63],
+    JULIM: [-31.42, 116.29]
+  }
   useEffect(() => {
     
     if (loopDone){
@@ -34,8 +50,12 @@ function FlightPlan() {
       //newCleanedResults=[{ANITO: [-0.28,104.87]},{PKP:[-2.17, 106.14]},{TOPIR:[]},...]
       // function called removeObjectsWithEmptyValues will objects with empty array
       
-      setCleanedResults(removeObjectsWithEmptyValues(newCleanedResults))
+      //setCleanedResults(extractValues(removeObjectsWithEmptyValues(newCleanedResults)))
+      setCleanedResults(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults)))
       
+      // cleanedResults will look like [[],[],[],[]...]
+      console.log("Below you might see cleanedResults variable: ")
+      console.log(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults)))
   }}, [results,loopDone]);
 
 	const handleInputChange = (e) => {
@@ -142,10 +162,7 @@ if (firstMatchingFlightPlan) {
       //     const response = await fetch(apiNavaids);
       // const data = await response.json();
       const data = await apiCallNavOrFix("navaids",point)
-      if(point==="PKP"){
-        console.log("data response from querying TOPIR at navaids: ", data)
-      }
-      
+     
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space     
@@ -233,23 +250,10 @@ catch (error) {
       <button  type="submit" className="btn btn-primary">Submit</button>
       </form>
       <div>
-        
+      {/* <Map data={cleanedResults}  /> */}
+      <Map   />
       </div>
-      <div>
-      {/* {results.map((item, index) => (
-        <ul key={index}>
-          {item.map((result, subIndex) => (
-            <li key={subIndex}>
-              {Object.keys(result).map((key) => (
-                <div key={key}>
-                  {key}: [{result[key].join(', ')}]
-                </div>
-              ))}
-            </li>
-          ))}
-        </ul>
-      ))} */}
-      </div>
+      
     </div>
   );
 }
