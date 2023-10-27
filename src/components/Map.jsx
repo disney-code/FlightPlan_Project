@@ -5,38 +5,40 @@ import './map.css';
 import { renderToStaticMarkup } from 'react-dom/server'; // Import renderToStaticMarkup
 import FilledCircleMarker from './FilledCircleMarker';
 //data = {ANITO:[],PKP:[],LAMOB:[]}
-function Map(){
-	const data = {
+function Map({data,waypoints}){
+	console.log("inside map.jsx")
+	console.log("below is waypoints:")
+	console.log(waypoints)
+	// const data = {
 		
-		ANITO:[-0.28,104.87],
-		PKP: [-2.17,106.14],
-		LAMOB: [-12,108.88],
-		IDOKU: [-18.26,111.11],
+	// 	ANITO:[-0.28,104.87],
+	// 	PKP: [-2.17,106.14],
+	// 	LAMOB: [-12,108.88],
+	// 	IDOKU: [-18.26,111.11],
 		
 		
-		REVOP: [-30.55,116.63],
-		JULIM:[-31.42,116.29]
+	// 	REVOP: [-30.55,116.63],
+	// 	JULIM:[-31.42,116.29]
 		
-	      };
+	//       };
 	const [mapBounds, setMapBounds] = useState(null);
-	//const [waypoints, setWaypoints] = useState([]);
-	const waypoints= Object.values(data)
+	// const waypoints = [[-0.28,104.87],
+	// 	[-2.17,106.14],
+	// 	[-12,108.88],
+	// 	[-18.26,111.11],
+	// 	[-30.55,116.63],
+	// 	[-31.42,116.29]]
+	
 	useEffect(() => {
 		if (data) {
-			
-		// console.log("inside map.jsx. data: ", data)
-		// const newWaypoints = Object.values(data);
-		// console.log("waypoints below: (line 15)");
-      		// console.log(newWaypoints);
-		//waypoints = [[],[]]
-		  if (waypoints.length > 0) {
 		    const bounds = latLngBounds(waypoints);
 		    setMapBounds(bounds);
+		     
 		  }
 
 		  
 		}
-	      }, []);
+	      , []);
 
 	      if (!data) {
 		// You can render a loading state or a message here when data is null.

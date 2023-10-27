@@ -20,7 +20,9 @@ function mergeObjects(arr) {
     return result;
   }, {});
 }
-
+function convertObjectToArray(obj) {
+  return Object.values(obj);
+}
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
   const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
@@ -29,6 +31,8 @@ function FlightPlan() {
   const [results, setResults] = useState([]);
   const [loopDone,setLoopDone] = useState(false); 
   const [cleanedResults, setCleanedResults] = useState(null);
+  //cleanedResults = {PKP:[],..}
+  const [waypoints,setWayPoints] = useState(null)
   const dynamicData = {
     
     LAMOB: [-12, 108.88],
@@ -52,7 +56,7 @@ function FlightPlan() {
       
       //setCleanedResults(extractValues(removeObjectsWithEmptyValues(newCleanedResults)))
       setCleanedResults(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults)))
-      
+      setWayPoints(convertObjectToArray(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults))))
       // cleanedResults will look like [[],[],[],[]...]
       console.log("Below you might see cleanedResults variable: ")
       console.log(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults)))
@@ -250,8 +254,8 @@ catch (error) {
       <button  type="submit" className="btn btn-primary">Submit</button>
       </form>
       <div>
-      {/* <Map data={cleanedResults}  /> */}
-      <Map   />
+      <Map data={cleanedResults} waypoints={waypoints} />
+      {/* <Map   /> */}
       </div>
       
     </div>
