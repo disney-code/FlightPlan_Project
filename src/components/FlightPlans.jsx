@@ -5,9 +5,6 @@ import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
 import {replaceObjects} from './cleanUpPointsNoduplicate'
 import Map from './Map';
 
-// function removeObjectsWithEmptyArrays(arrayOfObjects) {
-//   return arrayOfObjects.filter(obj => obj.value.length > 0);
-// }
 
 function removeObjectsWithEmptyValues(arr) {
   return arr.filter(obj => Object.values(obj)[0].length > 0);
@@ -23,9 +20,11 @@ function mergeObjects(arr) {
 function convertObjectToArray(obj) {
   return Object.values(obj);
 }
+
+// Start of the FlightPlan Component
 function FlightPlan() {
   const apiKey = '0b42b27c-8d1a-4d71-82c4-302c3ae19c51';
-  const flightPlanUrl="http://118.189.146.180:9080/flight-manager/displayAll?apikey=0b42b27c-8d1a-4d71-82c4-302c3ae19c51"
+  const flightPlanUrl=`http://118.189.146.180:9080/flight-manager/displayAll?apikey=${apiKey}`
 	const [flightNumber, setFlightNumber] = useState('');
   
   const [results, setResults] = useState([]);
@@ -33,16 +32,12 @@ function FlightPlan() {
   const [cleanedResults, setCleanedResults] = useState(null);
   //cleanedResults = {PKP:[],..}
   const [waypoints,setWayPoints] = useState(null)
-  const dynamicData = {
-    
-    LAMOB: [-12, 108.88],
-    IDOKU: [-18.26, 111.11],
-    REVOP: [-30.55, 116.63],
-    JULIM: [-31.42, 116.29]
-  }
+  //waypoints = [[-0.28,70],[10,80],...]
+  
   useEffect(() => {
     
     if (loopDone){
+      //loopDone is a flag so that when results is ready, things can happen
       const filteredResults = findObjectsWithMultipleCoordinates(results)
       // filteredResults contain the multiple coordinates points with one of thier coordinate only
       
@@ -54,53 +49,85 @@ function FlightPlan() {
       //newCleanedResults=[{ANITO: [-0.28,104.87]},{PKP:[-2.17, 106.14]},{TOPIR:[]},...]
       // function called removeObjectsWithEmptyValues will objects with empty array
       
-      //setCleanedResults(extractValues(removeObjectsWithEmptyValues(newCleanedResults)))
+      
       setCleanedResults(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults)))
+      //cleanedResults = {PKP:[-0.28,10], KAT:[1,3],...}
       setWayPoints(convertObjectToArray(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults))))
-      // cleanedResults will look like [[],[],[],[]...]
+      // waypoints will look like [[],[],[],[]...]
       console.log("Below you might see cleanedResults variable: ")
       console.log(mergeObjects(removeObjectsWithEmptyValues(newCleanedResults)))
   }}, [results,loopDone]);
 
+  // When either results or loopDone changes, useEffect runs once
+
 	const handleInputChange = (e) => {
 
 		setFlightNumber(e.target.value);
+    //flightNumber variable gets assigned a value
   }
 
 
 	const handleSubmit = async(e) => {
+    //code runs from line 71 to 233
 			e.preventDefault();
+      setResults([]);
+    setLoopDone(false);
+    setCleanedResults(null);
+    setWayPoints(null);
       console.log("Submit button clicked")
       
 try{
   
   const response = await axios.get(flightPlanUrl);
+  //response ={data: Array(4440), status:200, statusText :"OK"}
   const allFlightPlans = response.data;
+  console.log("response from Flight plan url ")
+  //response.data =(4440)[{...},{...},{...},...]
+  // each of {} in [] looks like 
+// {_id: '653d18048e0fa50dcab3e121', messageType: 'FPL', aircraftIdentification
   
   //filtered Flight plan will have multiple eg SIA469
-  const filteredFlightPlan = allFlightPlans.filter((plan) =>
+  // can filter allFlightPlans in a try and catch block
+let filteredFlightPlan
+  try{
+   filteredFlightPlan = allFlightPlans.filter((plan) =>
   plan.aircraftIdentification.toLowerCase() === flightNumber.toLowerCase()
-);
+);}
+catch(error){
+console.log("Failed to  find a flight with this number")
+}
+
+
 //flightMatchingFlightPlan will have one flight plan of eg SIA469
 const firstMatchingFlightPlan = filteredFlightPlan.find((plan) =>
   plan.filedRoute && (plan.filedRoute.routeText || plan.filedRoute.routeElement)
 );
+//firstMatchingFlightPlan can be undefined or an object
+if (!firstMatchingFlightPlan){
+  console.log("Flight Route for this Flight Number is not available")
+}
+else
+{ // else line 104 to 238
 
-if (firstMatchingFlightPlan) {
+//{_id: '653c72118e0fa50dcab3e049', messageType: 'ATFM', aircraftIdentification: 'SIA215', filedRoute: {…}, flightType: 'S', …}
+
+// firstMatchingFlightPlan.filedRoute {flightRuleCategory: 'I', cruisingSpeed: '0.85 M', cruisingLevel: '370 F', routeText: 'ANITO B470 PKP/N0497F370 L764 LAMOB B469 IDOKU/N04…390 B469 TOPIR/N0496F380 L514 REVOP Q38 JULIM DCT', routeElement: Array(7), …}
   // if you can get into this if block, it means there is a route for this flight number
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
   const {destinationAerodrome}=firstMatchingFlightPlan.arrival
   const {departureAerodrome}=firstMatchingFlightPlan.departure
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
+  //"routeText": "KAT P570 SULEN/M085F410 P570 MABIX/N0486F410 P756 OKABU/M085F410 M300 SALAX/N0486F410 Y340 BATAR A464 ARAMA"
+  
   const designatedPoints = routeElement.map(route => route.position.designatedPoint);
+  //routeElement : [{position: {desginatedPoint:KAT}},{},...]
   console.log("Designated Points: ",designatedPoints)
+  // designatedPoints=["KAT", "YASH",...]
   async function makeApiRequest(point) {
+    // every point (e.g REVOP) will call makeApiRequest once 
     try {
       
-      let callNavaids=false;
-      // const apiEndPoint=`http://118.189.146.180:9080/geopoints/search/fixes/${point}?apikey=${apiKey}`
-      // const response = await fetch(apiEndPoint);
-      // const data = await response.json();  
+      let callNavaids=false;  
       const data = await apiCallNavOrFix("fixes",point)
       // data may look like ['REVOP (7.48,28.31)', 'REVOP (-30.55,116.63)'] or ['JULIM (-31.42,116.29)']
       const transformedData = [];
@@ -135,9 +162,7 @@ if (firstMatchingFlightPlan) {
 
 
         if (callNavaids){
-      //     const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
-      //     const response = await fetch(apiNavaids);
-      // const data = await response.json();
+      
       const data = await apiCallNavOrFix("navaids",point)
       // data can look like ['KAT (13.03,7.69)', 'KAT (-33.71,150.30)', 'KAT (7.16,79.87)']
       for(const item of data){
@@ -161,10 +186,7 @@ if (firstMatchingFlightPlan) {
       }// end of if CAN find data in fixes
 
       else{
-       // query to navaids
-//  const apiNavaids=`http://118.189.146.180:9080/geopoints/search/navaids/${point}?apikey=${apiKey}`
-      //     const response = await fetch(apiNavaids);
-      // const data = await response.json();
+      
       const data = await apiCallNavOrFix("navaids",point)
      
       if (data.length>0){
@@ -196,7 +218,7 @@ if (firstMatchingFlightPlan) {
       
     } } // end of trying to query API
     catch (error) {
-      // call to API fail for this point
+      // call to API for this point coordinates failed 
       console.error(`Error for point ${point}: ${error}`);
     }
   }
@@ -209,29 +231,17 @@ if (firstMatchingFlightPlan) {
   }
   
   processItems().then(()=>{
-    
-    setLoopDone(true)
-    console.log("in line 174, chceck what is LoopDone: ", loopDone)
-   
+    setLoopDone(true)   
   })
-  // after processItems() complete, your results variable is updated, you may need to call 
- 
- 
   
-} else {
-  console.log('No matching flight plan found with "filedRoute" containing "routeText" or "routeElement.');
-}
+ }
 
-
- } // end of try
+ } // end of try on line 75
 
 catch (error) {
   
   console.error('API Error IN FlightPlans.jsx file:', error);
-} //catch for catching failure to retrive flight plans
-
-//check if results variable has object with more than one coordinates
-
+} 
 
 }; //end of handleSubmit
 
@@ -255,7 +265,7 @@ catch (error) {
       </form>
       <div>
       <Map data={cleanedResults} waypoints={waypoints} />
-      {/* <Map   /> */}
+      
       </div>
       
     </div>
