@@ -1,5 +1,4 @@
-//const { findClosestKAT } = require('./shortestDist');
-//const { filterOutEmptyPoints } = require('./filterOutEmptyPoints');
+
 import { findClosestKAT } from './shortestDist';
 import {filterOutEmptyPoints} from './filterOutEmptyPoints'
 function findObjectsWithMultipleCoordinates(results) {
@@ -11,7 +10,7 @@ function findObjectsWithMultipleCoordinates(results) {
 	console.log("2 Below is results:")
 	console.log(results)
 	// for SIA 
-	//results  = [{HSN:[[29.93,122.36]]},{TOGUG:[[29.2, 122.53]]},{},{},...]
+	//results  = [{HSN:[[29.93,122.36]]},{TOGUG:[[29.2, 122.53]]},{BEGMO:[[28,122.83]]},{LAPUG:[[1.69,103.41],[123,117.38]]},{BEBEM:[[22.95,116.36]]},{DOTMI:[[22.72,116.17]]},{MONTA:[21.56,116.20],[34.54,133.16],[10.92,122.52]},{ARROW:[-35,173.83],[19.84,114.37],[22.36,-155.21]},{EPDOS:[[19,113.56]]}]
 	const resultObjects = [];
 	let prevHasMultipleCoordinates = false;
       
@@ -19,26 +18,48 @@ function findObjectsWithMultipleCoordinates(results) {
 	  const currentObject = results[i]; //get the obj could be { KAT: [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]] }
 	  const currentCoordinates = Object.values(currentObject)[0]; //extract the value from an object, in this case it is 
 	  //[[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]]
-	//console.log("current COordinates: ")	
-	  //console.log(currentCoordinates)
-	  // currentCoordinates = [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]]
-	  if (currentCoordinates.length > 1) {
-	    // If the current object has more than one coordinate, include it
-	      if (i === results.length - 1 && i > 0){
-		// this if condition is to make sure this is the last Object
-		resultObjects.push(results[i-1]);
-		resultObjects.push(currentObject);
+	//added on 4/11/23
+		if (i===0){
+			// this is to check if first obj has multiple
+			if (currentCoordinates.length>1){
+				//resultObjects is an array of object
+				resultObjects.push(currentObject)
+				resultObjects.push(results[i+1])
+				prevHasMultipleCoordinates = true //inform that current Object has multiple coordinates
+
+			}
+			continue
 		}
-	else{resultObjects.push(currentObject);
-		prevHasMultipleCoordinates = true;}
-	 
-	    
-	  } else if (prevHasMultipleCoordinates) {
-	    // If the previous object had multiple coordinates, include the current object
-	    resultObjects.push(currentObject);
-	    prevHasMultipleCoordinates = false;
-	  } 
-	}
+		else{// for all objects that are not first objects
+		
+			if (currentCoordinates.length>1){
+				if (!prevHasMultipleCoordinates){
+					resultObjects.push(currentObject)
+					resultObjects.push(results[i-1])
+				prevHasMultipleCoordinates = true;// say that this object has multiple coordinates
+
+				}
+				
+				else{
+					// if prevHasMultipleCoordinates, then look at the one infront 
+					resultObjects.push(currentObject)
+					resultObjects.push(results[i+1])
+					prevHasMultipleCoordinates = true; // say this object dont have multiple
+				}
+			}
+			else{
+				prevHasMultipleCoordinates = false;
+			}
+
+		}
+	} // end of for loop
+	console.log("inside pickOutMultiple.jsx line 54,resultObjects below: ")
+	console.log(resultObjects)
+	//end of adding on 4/11/23
+//resultObjects for SIA833 = [{LAPUG:[[1.69, 103.41],[23, 117.38]]},
+//{BEGMO:[[28, 121.83]]}, {MONTA:[[21.56, 116.2],[34.54, 133.16],[10.92, 122.52]}
+//{DOTMI:[[22.72, 116.17]] } , {ARROW:[[-35, 173.83],[19.84, 114.37],[22.36, -155.21]]},{EPDOS:[19, 113.56]]}]
+	
       // resultObjects = [{REVOP:[[7.48, 28.31],[-30.55, 116.63]]},{JULIM: [[-31.42, 116.29]]}]
 	// Once you get resultObjects 	
 	let finalArray=[];
@@ -68,6 +89,7 @@ function findObjectsWithMultipleCoordinates(results) {
 
       return finalArray;
 	// resultObjects return an array of objects. these objecets are those with multiple coordinates or one before/after an object with multiple coodinates
+	// e.g. finalArray = [{REVOP: [-30.55, 116.63]}]
       }
 
 export {findObjectsWithMultipleCoordinates};

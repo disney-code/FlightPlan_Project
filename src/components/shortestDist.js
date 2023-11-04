@@ -25,9 +25,9 @@ function calculateDistance(coord1, coord2) {
       
 function findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES) {
 	console.log("Inside shortestDist.js file")
-	console.log("Below is the first point: ")
+	console.log("Below is the first point(Inside shortestDist.js file): ")
 	console.log(NAVAID_COORDINATES)
-	console.log("Below is second coordinate: ")
+	console.log("Below is second coordinate(Inside shortestDist.js file): ")
 	console.log(WAYPOINT_COORDINATES)
 	let closestKAT = null;
 	let minDistance = Number.MAX_VALUE;

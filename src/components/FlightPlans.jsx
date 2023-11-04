@@ -121,8 +121,11 @@ else
   const {departureAerodrome}=firstMatchingFlightPlan.departure
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
   //"routeText": "KAT P570 SULEN/M085F410 P570 MABIX/N0486F410 P756 OKABU/M085F410 M300 SALAX/N0486F410 Y340 BATAR A464 ARAMA"
-  
-  const designatedPoints = routeElement.map(route => route.position.designatedPoint);
+  console.log("in flightplans.jsx file, below is routeText: ")
+  console.log(routeText)
+  console.log("in flightplans.jsx file, below is routeElement: ")
+  console.log(routeElement)
+  const designatedPoints = routeElement.filter(route => route.position?.designatedPoint).map(route => route.position.designatedPoint);
   //routeElement : [{position: {desginatedPoint:KAT}},{},...]
   console.log("Designated Points: ",designatedPoints)
   // designatedPoints=["KAT", "YASH",...]
@@ -244,7 +247,7 @@ else
 
 catch (error) {
   
-  console.error('API Error IN FlightPlans.jsx file:', error);
+  console.error('error in FlightPlans.jsx file on line 247, API Error IN FlightPlans.jsx file:', error);
 } 
 
 }; //end of handleSubmit
