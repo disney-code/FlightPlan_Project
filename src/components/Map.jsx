@@ -7,6 +7,8 @@ import FilledCircleMarker from './FilledCircleMarker';
 //data = {ANITO:[],PKP:[],LAMOB:[]}
 function Map({data,waypoints}){
 	console.log("inside map.jsx")
+	console.log("below is data: ")
+	console.log(data)
 	console.log("below is waypoints:")
 	console.log(waypoints)
 	// const data = {

@@ -24,6 +24,11 @@ function calculateDistance(coord1, coord2) {
       }
       
 function findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES) {
+	console.log("Inside shortestDist.js file")
+	console.log("Below is the first point: ")
+	console.log(NAVAID_COORDINATES)
+	console.log("Below is second coordinate: ")
+	console.log(WAYPOINT_COORDINATES)
 	let closestKAT = null;
 	let minDistance = Number.MAX_VALUE;
       
@@ -58,3 +63,11 @@ module.exports = {  findClosestKAT };
 //       };
 //       const WAYPOINT_COORDINATES =  [-31.42, 116.29]
 // findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES)
+
+
+//for SIA242, it is giving error because the first one the one with multiple coordinate
+//NAVAID_COORDINATES ={RIC:[
+//[37.5, -77.32],[-33.61, 150.8],[-33.6, 150.78]
+//]}
+//WAYPOINT_COORDINATES =[]
+

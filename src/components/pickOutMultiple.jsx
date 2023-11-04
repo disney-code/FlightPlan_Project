@@ -1,17 +1,31 @@
-const { findClosestKAT } = require('./shortestDist');
-
+//const { findClosestKAT } = require('./shortestDist');
+//const { filterOutEmptyPoints } = require('./filterOutEmptyPoints');
+import { findClosestKAT } from './shortestDist';
+import {filterOutEmptyPoints} from './filterOutEmptyPoints'
 function findObjectsWithMultipleCoordinates(results) {
+	console.log("Inside pickOutMultiple.jsx")
+	console.log("Below is results:")
+	console.log(results)
+	results = filterOutEmptyPoints(results)
+	console.log("2 Inside pickOutMultiple.jsx")
+	console.log("2 Below is results:")
+	console.log(results)
+	// for SIA 
+	//results  = [{HSN:[[29.93,122.36]]},{TOGUG:[[29.2, 122.53]]},{},{},...]
 	const resultObjects = [];
 	let prevHasMultipleCoordinates = false;
       
 	for (let i = 0; i < results.length; i++) {
 	  const currentObject = results[i]; //get the obj could be { KAT: [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]] }
-	  const currentCoordinates = Object.values(currentObject)[0]; //extract the value from an object, in this case it is [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]]
+	  const currentCoordinates = Object.values(currentObject)[0]; //extract the value from an object, in this case it is 
+	  //[[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]]
 	//console.log("current COordinates: ")	
 	  //console.log(currentCoordinates)
+	  // currentCoordinates = [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]]
 	  if (currentCoordinates.length > 1) {
 	    // If the current object has more than one coordinate, include it
 	      if (i === results.length - 1 && i > 0){
+		// this if condition is to make sure this is the last Object
 		resultObjects.push(results[i-1]);
 		resultObjects.push(currentObject);
 		}
@@ -56,7 +70,7 @@ function findObjectsWithMultipleCoordinates(results) {
 	// resultObjects return an array of objects. these objecets are those with multiple coordinates or one before/after an object with multiple coodinates
       }
 
-module.exports = {findObjectsWithMultipleCoordinates};
+export {findObjectsWithMultipleCoordinates};
 
 // results1 shld be data from the FlightPlans.jsx result variable 
 // const results1 = [

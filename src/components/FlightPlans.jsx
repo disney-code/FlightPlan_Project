@@ -4,7 +4,7 @@ import { apiCallNavOrFix } from './callFixesApi';
 import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
 import {replaceObjects} from './cleanUpPointsNoduplicate'
 import Map from './Map';
-
+import {filterOutEmptyPoints} from './filterOutEmptyPoints'
 
 function removeObjectsWithEmptyValues(arr) {
   return arr.filter(obj => Object.values(obj)[0].length > 0);
@@ -38,6 +38,9 @@ function FlightPlan() {
     
     if (loopDone){
       //loopDone is a flag so that when results is ready, things can happen
+      console.log("Inside flightplans.jsx: ")
+      console.log("results below:")
+      console.log(results)
       const filteredResults = findObjectsWithMultipleCoordinates(results)
       // filteredResults contain the multiple coordinates points with one of thier coordinate only
       
@@ -231,6 +234,7 @@ else
   }
   
   processItems().then(()=>{
+    
     setLoopDone(true)   
   })
   
