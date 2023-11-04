@@ -1,6 +1,6 @@
 import {useState,useEffect} from 'react';
 import axios from 'axios';
-import { apiCallNavOrFix } from './callFixesApi';
+import { apiCallNavOrFix,apiCallAirports } from './callFixesApi';
 import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
 import {replaceObjects} from './cleanUpPointsNoduplicate'
 import Map from './Map';
@@ -109,6 +109,7 @@ const firstMatchingFlightPlan = filteredFlightPlan.find((plan) =>
 if (!firstMatchingFlightPlan){
   console.log("Flight Route for this Flight Number is not available")
 }
+
 else
 { // else line 104 to 238
 
@@ -119,6 +120,7 @@ else
   // Extract the "routeText" and "routeElement" properties from the "filedRoute" object
   const {destinationAerodrome}=firstMatchingFlightPlan.arrival
   const {departureAerodrome}=firstMatchingFlightPlan.departure
+  
   const { routeText, routeElement } = firstMatchingFlightPlan.filedRoute;
   //"routeText": "KAT P570 SULEN/M085F410 P570 MABIX/N0486F410 P756 OKABU/M085F410 M300 SALAX/N0486F410 Y340 BATAR A464 ARAMA"
   console.log("in flightplans.jsx file, below is routeText: ")
@@ -127,8 +129,42 @@ else
   console.log(routeElement)
   const designatedPoints = routeElement.filter(route => route.position?.designatedPoint).map(route => route.position.designatedPoint);
   //routeElement : [{position: {desginatedPoint:KAT}},{},...]
+  designatedPoints.unshift(departureAerodrome)
+  designatedPoints.push(destinationAerodrome)
   console.log("Designated Points: ",designatedPoints)
+
   // designatedPoints=["KAT", "YASH",...]
+
+async function makeAirportCoordReq(point){
+try{
+  console.log("Calling for Airport coordinate for point: ")
+  console.log(point)
+const data = await apiCallAirports("airports", point)
+console.log("airport ",point, 'data is ',data)
+const transformedData = [];
+if (data.length>0){
+  for(const item of data){
+    const parts = item.split(' '); // Split the item by space     
+    const [currentKey, value] = parts; // Separate key and value
+    const temp=value.slice(1,-1)
+    const [x,y] = temp.split(',').map(Number)
+   
+    transformedData.push([x,y]);
+    
+  }
+
+  let newObj={[point]:transformedData}
+setResults((prevResults) =>[
+      ...prevResults,
+      newObj
+    ] );
+}
+}
+catch(error){
+  console.error(`Error while calling for Airport coordinate for point ${point}: ${error}`);
+}
+}
+
   async function makeApiRequest(point) {
     // every point (e.g REVOP) will call makeApiRequest once 
     try {
@@ -230,10 +266,24 @@ else
   }
 
   async function processItems() {
-    for (const item of designatedPoints) {
+    for (let i = 0; i < designatedPoints.length; i++) {
+      if (i===0 ||i === designatedPoints.length - 1){
+        const item = designatedPoints[i];
+        console.log("Hai")
+        console.log("here is i:", i)
+        await makeAirportCoordReq(item);
+      }
+      else{
+        const item = designatedPoints[i];
       await makeApiRequest(item);
+      }
       
+    
     }
+    // for (const item of designatedPoints) {
+    //   await makeApiRequest(item);
+      
+    // }
   }
   
   processItems().then(()=>{
