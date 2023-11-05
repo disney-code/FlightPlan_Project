@@ -2,6 +2,7 @@
 import { findClosestKAT } from './shortestDist';
 import {filterOutEmptyPoints} from './filterOutEmptyPoints'
 function findObjectsWithMultipleCoordinates(results) {
+	//who calls this function? FlightPlans.jsx
 	console.log("Inside pickOutMultiple.jsx")
 	console.log("Below is results:")
 	console.log(results)
@@ -79,11 +80,14 @@ function findObjectsWithMultipleCoordinates(results) {
 	}
 
 	// console.log('Iteration:', i / 2);
-	// console.log('multipleCoordinates: ',multipleCoordinates)
+	console.log('multipleCoordinates (line82): ',multipleCoordinates)
 	// console.log('singleCoordinates: ',singleCoordinates)
 	const key = Object.keys(singleCoordinates)[0]
-	//console.log("singleCoordinates[key]: ",singleCoordinates[key][0] )
+	console.log("singleCoordinates[key] (line85): ",singleCoordinates[key][0] )
 	let tempObj=findClosestKAT(multipleCoordinates, singleCoordinates[key][0]) // returns an object like { OKABU: [ 3.27, 94.85 ] }
+	// multipleCoordinates = {UK: [[72.79, -56.13],[39.28, -123.24]...]}
+	// singleCoordinates[key][0] = [54.5,31.08]
+	
 	finalArray.push(tempObj)
 }
 

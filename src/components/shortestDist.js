@@ -24,6 +24,7 @@ function calculateDistance(coord1, coord2) {
       }
       
 function findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES) {
+	//who calls findClosestKAT? pickOutMultiple.jsx
 	console.log("Inside shortestDist.js file")
 	console.log("Below is the first point(Inside shortestDist.js file): ")
 	console.log(NAVAID_COORDINATES)
