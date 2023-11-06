@@ -1,5 +1,4 @@
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 const FilledCircleMarker = ({ name }) => {
   return (
     <svg

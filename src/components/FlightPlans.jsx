@@ -4,7 +4,6 @@ import { apiCallNavOrFix,apiCallAirports } from './callFixesApi';
 import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
 import {replaceObjects} from './cleanUpPointsNoduplicate'
 import Map from './Map';
-import {filterOutEmptyPoints} from './filterOutEmptyPoints'
 import ListOfFlights from './ListOfFlights'
 function removeObjectsWithEmptyValues(arr) {
   return arr.filter(obj => Object.values(obj)[0].length > 0);
@@ -147,7 +146,7 @@ const transformedData = [];
 if (data.length>0){
   for(const item of data){
     const parts = item.split(' '); // Split the item by space     
-    const [currentKey, value] = parts; // Separate key and value
+    const [_, value] = parts;  // eslint-disable-line no-unused-vars
     const temp=value.slice(1,-1)
     const [x,y] = temp.split(',').map(Number)
    
@@ -217,8 +216,10 @@ catch(error){
       console.log("Below is how filteredData looks: ")
       console.log(filteredData)
       for(const item of filteredData){
-        const parts = item.split(' '); // Split the item by space     
-        const [currentKey, value] = parts; // Separate key and value
+        const parts = item.split(' '); // Split the item by space
+        const _ = parts[0] // eslint-disable-line no-unused-vars
+        const value = parts[1];     
+        //const [_, value] = parts; // Separate key and value
         const temp=value.slice(1,-1)
         const [x,y] = temp.split(',').map(Number)
         transformedData.push([x,y]);
@@ -243,7 +244,7 @@ catch(error){
       if (data.length>0){
         for(const item of data){
           const parts = item.split(' '); // Split the item by space     
-          const [currentKey, value] = parts; // Separate key and value
+          const [_, value] = parts;  // eslint-disable-line no-unused-vars
           const temp=value.slice(1,-1)
           const [x,y] = temp.split(',').map(Number)
          

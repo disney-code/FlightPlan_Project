@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useMemo } from 'react';
+import React, { useEffect, useState  } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker } from 'react-leaflet';
 import { latLngBounds, divIcon } from 'leaflet';
 import './map.css';
@@ -39,8 +39,8 @@ function Map({data,waypoints}){
 		  }
 
 		  
-		}
-	      , []);
+		},[] 
+	      );
 
 	      if (!data) {
 		// You can render a loading state or a message here when data is null.
