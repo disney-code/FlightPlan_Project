@@ -41,4 +41,4 @@ async function apiCallAirports(type, term) {
       }
 
 
-module.exports = { apiCallNavOrFix ,apiCallAirports};
+export { apiCallNavOrFix ,apiCallAirports};
