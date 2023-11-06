@@ -28,7 +28,7 @@ function replaceObjects(resultObjects, finalArray) {
 	
 	return updatedResultObjects;
       }
-exports = {replaceObjects};
+export {replaceObjects};
       // Example data resultObjects is from flightPlans.jsx
 // const resultObjects = [
 // 	{ KAT: [[13.03, 7.69], [-33.71, 150.3], [7.16, 79.87]] },
