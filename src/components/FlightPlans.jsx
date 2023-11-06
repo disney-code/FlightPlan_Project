@@ -5,7 +5,7 @@ import {findObjectsWithMultipleCoordinates} from './pickOutMultiple'
 import {replaceObjects} from './cleanUpPointsNoduplicate'
 import Map from './Map';
 import {filterOutEmptyPoints} from './filterOutEmptyPoints'
-
+import ListOfFlights from './ListOfFlights'
 function removeObjectsWithEmptyValues(arr) {
   return arr.filter(obj => Object.values(obj)[0].length > 0);
 }
@@ -314,6 +314,8 @@ catch (error) {
 
   return (
 	<div className="container">
+    <ListOfFlights/>
+
 		<form className="mt-3" onSubmit={handleSubmit}>
 	<div className="form-group">
       <label htmlFor="flightNumber">Enter Flight Number: </label>
