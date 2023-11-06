@@ -55,7 +55,7 @@ function findClosestKAT(NAVAID_COORDINATES, WAYPOINT_COORDINATES) {
       }
       
       // Export the function to use it in your React component
-module.exports = {  findClosestKAT };
+export {  findClosestKAT };
 // const NAVAID_COORDINATES = {
 // 	KAT: [
 // 		[7.48, 28.31],

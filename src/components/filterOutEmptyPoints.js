@@ -10,7 +10,7 @@ function filterOutEmptyPoints(data) {
 	});
       }
 
-module.exports = {filterOutEmptyPoints};
+export {filterOutEmptyPoints};
 
 
 // const data = [{RIC:[[1,2],[3,4]]},{ENPAG:[[]]},{VINAX:[[-12,34]]}]
