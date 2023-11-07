@@ -4,6 +4,7 @@ import { latLngBounds, divIcon } from 'leaflet';
 import './map.css';
 import { renderToStaticMarkup } from 'react-dom/server'; // Import renderToStaticMarkup
 import FilledCircleMarker from './FilledCircleMarker';
+
 //data = {ANITO:[],PKP:[],LAMOB:[]}
 function Map({data,waypoints}){
 	console.log("inside map.jsx")
