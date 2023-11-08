@@ -5,7 +5,7 @@ import './map.css';
 import { renderToStaticMarkup } from 'react-dom/server'; // Import renderToStaticMarkup
 import FilledCircleMarker from './FilledCircleMarker';
 
-//data = {ANITO:[],PKP:[],LAMOB:[]}
+//data = {ANITO:[],PKP:[],LAMOB:[]} jdj
 function Map({data,waypoints}){
 	console.log("inside map.jsx")
 	console.log("below is data: ")
