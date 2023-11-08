@@ -3,7 +3,13 @@ npm run start
 My website is a client side or front-end application
 #Step 1:
 I started this project on another github Repository called corporate-pass-project (I used Create React App to get the base files)  then i transfer to this repository called FlightPlan_Project on 6/11/2023 and deleted files not related to this FlightPlan Project as I wanted to begin my CICD process using GitHub Actions.
-#Step 2:
+#8/11/2023
+manage to use gigthub actions to auto deploy to aws S3 bucket. 
+my IAM user is UserforS3 
+the bucket is flightroute
+website that helped: https://medium.com/boca-code/deploy-your-react-app-to-aws-s3-bucket-and-with-ci-cd-1c9ce03023c2
+
+this is on https://github.com/disney-code/FlightPlan_Project
  
 
 

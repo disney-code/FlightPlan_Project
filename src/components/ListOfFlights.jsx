@@ -31,7 +31,7 @@ function ListOfFlights() {
 
   return (
     <div>
-      <h2>Use the box below to see a list of flights you can search for:</h2>
+      <h2>A list of Flights:</h2>
       {loading ? ( // Display a loading message while data is being fetched
         <p>Loading...</p>
       ) : (
