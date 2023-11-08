@@ -30,7 +30,7 @@ jobs:
       
       - name: Deploy to AWS S3
         run: |
-          aws s3 sync build/ s3://${{ env.AWS_S3_BUCKET }}/ --acl public-read --delete
+          aws s3 sync build/ s3://flightroute/ --acl public-read --delete
  
           
         env:
