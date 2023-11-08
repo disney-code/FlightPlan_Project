@@ -29,8 +29,9 @@ jobs:
 
       
       - name: Deploy to AWS S3
-        run: |
-          aws s3 sync build/ s3://flightroute/ --acl public-read --delete
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete --exclude '*' --include 'build/**'
  
           
         env:
